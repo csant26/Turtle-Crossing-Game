@@ -57,8 +57,8 @@ class TurtleCross:
         dx = abs(plyr.xcor() - car.xcor())
         dy = abs(plyr.ycor() - car.ycor())
 
-        car_half_width = 30   # 60 / 2
-        car_half_height = 10  # 20 / 2
+        car_half_width = 30 
+        car_half_height = 10
 
         player_half_length = 18
         player_half_width = 11
