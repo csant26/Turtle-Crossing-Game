@@ -10,10 +10,11 @@ class Player(turtle.Turtle):
         self.penup()
         self.goto(x=cons.INITIAL_PLAYER_XCOOR,y=cons.INITIAL_PLAYER_YCOOR)
         self.shape("turtle")
+        self.shapesize(stretch_len=0.8,stretch_wid=0.8)
         self.setheading(90)
 
     def move_player_up(self):
-        """Moves player up"""
+        """Moves player up""" 
         if self.ycor() < cons.PLAYER_MAX_YCOOR:
             self.forward(cons.PLAYER_PACE)
 

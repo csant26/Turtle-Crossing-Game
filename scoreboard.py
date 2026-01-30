@@ -13,9 +13,11 @@ class Scoreboard(turtle.Turtle):
         self.color(cons.SCORE_COLOUR)
         self.update_scoreboard()
 
-    def update_scoreboard(self):
+    def update_scoreboard(self,level=None):
         """Updates levels"""
-        self.level_count += 1
+        if level is None:
+            self.level_count += 1
+        else:
+            self.level_count = level
         self.clear()
         self.write(f"Level {self.level_count}",font=("Courier",30,"bold"))
-
