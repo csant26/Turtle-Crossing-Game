@@ -5,16 +5,18 @@ import constants as cons
 import scoreboard
 import player
 import car_manager
+import save_player as sp
 
 class TurtleCross:
     """TurtleCross"""
     def __init__(self):
         self.initialize_screen()
         self.initialize_player()
-        self.record_player_name()
-        self.initialize_player_motion()
         self.initialize_car_manager()
+        self.record_player_name()
         self.initialize_scoreboard()
+        self.load_player()
+        self.initialize_player_motion()
         self.game_on = True
 
     def initialize_screen(self):
@@ -52,16 +54,25 @@ class TurtleCross:
                                                  "May I have your name please?")
         self.screen.title(f"You can do it! {self.player_name}")
 
+    def load_player(self):
+        """Loads player"""
+        self.save_player = sp.SavePlayer()
+        player_level = self.save_player.gets_player(self.player_name)
+        if player_level != 0:
+            self.score.update_scoreboard(player_level)
+            self.car_manager.create_multiple_cars(player_level*5)
+            self.car_manager.increase_car_pace(player_level//2 + 0.5)
+
     def has_collided(self, plyr:player.Player, car:car_manager.Car):
         """Determines if player has collided with car"""
         dx = abs(plyr.xcor() - car.xcor())
         dy = abs(plyr.ycor() - car.ycor())
 
-        car_half_width = 30   # 60 / 2
-        car_half_height = 10  # 20 / 2
+        car_half_width = 30
+        car_half_height = 10
 
-        player_half_length = 18
-        player_half_width = 11
+        player_half_length = 18 # this is more because of turtle head.
+        player_half_width = 8 # 20 * 0.8 / 2; 20=turtle, 0.8=shapesize, 2=half-height
 
         return (
             dx < car_half_width + player_half_length and
@@ -78,11 +89,19 @@ class TurtleCross:
         self.car_manager.move_cars()
 
         if self.player.ycor() > cons.PLAYER_MAX_YCOOR - 30:
+            print(f"Level:{self.score.level_count}, No. of cars:{self.car_manager.car_number}, \
+                  Car speed:{self.car_manager.dx}")
             self.player.reset_player()
             self.score.update_scoreboard()
+            self.car_manager.clear_cars()
+            self.car_manager.create_multiple_cars(self.car_manager.car_number+5)
+            self.car_manager.increase_car_pace()
+            msg.showinfo("Level complete",f"Level {self.score.level_count-1} complete")
 
         for car in self.car_manager.cars:
             if self.has_collided(self.player,car):
+                print("Saving data:",self.player_name,self.score.level_count)
+                self.save_player.save_player(self.player_name,self.score.level_count)
                 msg.showerror("LOST","Nice try. But, you've lost.")
                 self.game_on = False
 

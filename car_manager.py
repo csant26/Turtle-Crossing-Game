@@ -19,7 +19,8 @@ class CarManager():
     """Cars manager"""
     def __init__(self):
         self.cars:list[Car] = []
-        self.create_multiple_cars()
+        self.car_number = cons.INITIAL_CAR_COUNT
+        self.create_multiple_cars(self.car_number)
         self.dx = 1
 
     def create_single_car(self):
@@ -35,10 +36,11 @@ class CarManager():
                 self.cars.append(my_car)
                 break
 
-    def create_multiple_cars(self):
+    def create_multiple_cars(self,car_number):
         """Create cars"""
-        for _ in range(1,70):
+        for _ in range(1,car_number):
             self.create_single_car()
+        self.car_number = car_number
 
     def is_position_free(self, x, y):
         """Decides if a particular coordinate is free to place car"""
@@ -58,6 +60,15 @@ class CarManager():
                 next_x = cons.CAR_MAX_XCOOR
             car.goto(next_x,car.ycor())
 
-    def increase_car_pace(self):
+    def increase_car_pace(self,dx=None):
         """Increase car pace each level"""
-        self.dx += 0.5
+        if dx is None:
+            self.dx += 0.5
+        else:
+            self.dx = dx
+    
+    def clear_cars(self):
+        """Remove all cars from screen and reset list"""
+        for car in self.cars:
+            car.hideturtle()
+        self.cars.clear()
